@@ -8,10 +8,7 @@ def extract_edges(image):
 
 def texture_analysis(image, l=32):
     gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
-    gray = (gray * l / 256.0)
-    # gray *= l
-    # gray /= 256.0
-    gray = gray.astype(np.uint8)
+    gray = (gray.astype(np.float64) * l / 256).astype(np.uint8)
     glcm = np.zeros((l,l), dtype=np.float64)
 
     for y in range(gray.shape[0]):

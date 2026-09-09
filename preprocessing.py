@@ -3,7 +3,7 @@ import numpy as np
 
 def extract_edges(image):
     gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
-    edges = cv.Canny(gray_image, 100, 120)
+    edges = cv.Canny(gray_image, 40, 12)
     return edges
 
 def texture_analysis(image, l=32):

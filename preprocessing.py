@@ -1,5 +1,10 @@
 import cv2 as cv
 import numpy as np
+import os
+
+def resize(image, size=(224, 224)):
+    img = cv.imread(image)
+    return cv.resize(img, None, fx=0.5, fy=0.5)
 
 def extract_edges(image):
     gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
@@ -58,7 +63,15 @@ def preprocess_image(image_path):
     print("homogeneity:", homogeneity)
     print("energy:", energy)
     print("correlation:", correlation)
-0
+
+def generate_dataset(dir):
+    for filename in os.listdir(dir):
+        image_path = os.path.join(dir, filename)
+        image = cv.imread(image_path)
+        if image is not None:
+            output = os.path.join("./Preprocessed/train/squamous.cell.carcinoma_left.hilum_T1_N2_M0_IIIa", filename)
+            cv.imwrite(output, extract_edges(image))
+
 def display_images(original, processed):
     processed = cv.cvtColor(processed, cv.COLOR_GRAY2BGR)
     combined = np.hstack((original, processed))

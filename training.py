@@ -56,7 +56,7 @@ def train(filename):
     model = CNN().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-    epochs = 30
+    epochs = 17
     print(dataset.classes)
     print("Starting training")
     for epoch in range(epochs):

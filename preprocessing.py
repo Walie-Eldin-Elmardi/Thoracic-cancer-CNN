@@ -7,13 +7,22 @@ def resize(image, size=(400,400)):
     # display_images(image, cv.resize(image, size))
     return cv.resize(image, size)
 
+def gray_scale(image):
+    return cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+
+def contrast(image, limit):
+    contrast = cv.createCLAHE(clipLimit=limit, tileGridSize=(8, 8))
+    return contrast.apply(image)
+
 def normalize(image):
-    return image.astype(np.float32) / 255.0
+    processed = image.astype(np.float64) / 255.0
+    # processed = (processed * 255).astype(np.uint8)
+    return processed
 
 def extract_edges(image):
     # gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
     # image = cv.imread(image)
-    edges = cv.Canny(image, 10,20)
+    edges = cv.Canny(image, 10,60)
     return edges
 
 def texture_analysis(image, l=32):
@@ -57,11 +66,11 @@ def texture_analysis(image, l=32):
     energy = np.sqrt(energy)
     return contrast, homogeneity, energy, correlation
 
-def preprocess_image(image):
+def preprocess_image(image_path):
     # Load the image
-    # image = cv.imread(image_path)
+    image = cv.imread(image_path)
     #display the original and processed images
-    display_images(image, extract_edges(image))
+    display_images(image, normalize(gray_scale(resize(image))))
 
     contrast, homogeneity, energy, correlation = texture_analysis(image)
     print("contrast:", contrast)
@@ -69,13 +78,13 @@ def preprocess_image(image):
     print("energy:", energy)
     print("correlation:", correlation)
 
-def generate_dataset(dir):
+def generate_dataset(dir, new_dir):
     for filename in os.listdir(dir):
         image_path = os.path.join(dir, filename)
         image = cv.imread(image_path)
         if image is not None:
-            output = os.path.join("./Preprocessed/train/adenocarcinoma_left.lower.lobe_T2_N0_M0_Ib", filename)
-            cv.imwrite(output, normalize(extract_edges(morphological_operations(resize(image)))))
+            output = os.path.join(new_dir, filename)
+            cv.imwrite(output, contrast(gray_scale(resize(image)), 3.0))
 
 def display_images(original, processed):
     if len(original.shape) == 2:

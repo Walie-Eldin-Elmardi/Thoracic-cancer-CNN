@@ -4,9 +4,14 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import transforms, datasets
 from PIL import Image
+from TwoImageDataset import TwoImageDataset
 
-dataset = datasets.ImageFolder('./Preprocessed/valid', transform=transforms.Compose([
-    # transforms.Resize((400,400)),
+# dataset = datasets.ImageFolder('./Preprocessed/valid', transform=transforms.Compose([
+#     # transforms.Resize((400,400)),
+#     transforms.Grayscale(num_output_channels=1),
+#     transforms.ToTensor()
+# ]))
+dataset = TwoImageDataset('./Preprocessed/edges/test', './Preprocessed/texture/test', transform=transforms.Compose([
     transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ]))

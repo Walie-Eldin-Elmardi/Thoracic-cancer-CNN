@@ -14,6 +14,15 @@ def contrast(image, limit):
     contrast = cv.createCLAHE(clipLimit=limit, tileGridSize=(8, 8))
     return contrast.apply(image)
 
+def sharpen(image):
+    kernel = np.array([[0, -1, 0],
+                       [-1, 5, -1],
+                       [0, -1, 0]])
+    sharpened = cv.filter2D(image, -1, kernel)
+    # image = cv.filter2D(image, -1, kernel)
+    return sharpened
+    # display_images(image, sharpened)
+
 def normalize(image):
     processed = image.astype(np.float64) / 255.0
     # processed = (processed * 255).astype(np.uint8)
@@ -22,7 +31,7 @@ def normalize(image):
 def extract_edges(image):
     # gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
     # image = cv.imread(image)
-    edges = cv.Canny(image, 10,60)
+    edges = cv.Canny(image, 25,80)
     return edges
 
 def texture_analysis(image, l=32):
@@ -78,13 +87,21 @@ def preprocess_image(image_path):
     print("energy:", energy)
     print("correlation:", correlation)
 
-def generate_dataset(dir, new_dir):
+def generate_texture_dataset(dir, new_dir):
     for filename in os.listdir(dir):
         image_path = os.path.join(dir, filename)
         image = cv.imread(image_path)
         if image is not None:
             output = os.path.join(new_dir, filename)
-            cv.imwrite(output, contrast(gray_scale(resize(image)), 3.0))
+            cv.imwrite(output, sharpen(contrast(gray_scale(resize(image)), 6.0)))
+
+def generate_edge_dataset(dir, new_dir):
+    for filename in os.listdir(dir):
+        image_path = os.path.join(dir, filename)
+        image = cv.imread(image_path)
+        if image is not None:
+            output = os.path.join(new_dir, filename)
+            cv.imwrite(output, extract_edges(gray_scale(resize(image))))
 
 def display_images(original, processed):
     if len(original.shape) == 2:
@@ -98,10 +115,11 @@ def display_images(original, processed):
 
 def morphological_operations(image):
     # image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
-    kernel = np.ones((3,3), np.uint8)
+    kernel = np.ones((2,2), np.uint8)
     # dilated = cv.dilate(image, kernel, iterations=2)
     eroded = cv.erode(image, kernel, iterations=1)
-    return eroded
+    # return eroded
     # preprocess_image(eroded)
-    # display_images(eroded, extract_edges(eroded))
+    # display_images(extract_edges(image), extract_edges(eroded))
+    display_images((image), (eroded))
     # display_images(dilated, extract_edges(dilated))

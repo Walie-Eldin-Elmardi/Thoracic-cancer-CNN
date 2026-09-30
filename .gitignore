@@ -1,4 +1,4 @@
-.pth
-/Preprocessed
-/Dataset
+*.pth
+Preprocessed/
+Dataset/
 model*

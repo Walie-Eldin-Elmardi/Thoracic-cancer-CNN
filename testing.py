@@ -13,7 +13,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 #     transforms.Grayscale(num_output_channels=1),
 #     transforms.ToTensor()
 # ]))
-dataset = TwoImageDataset('./Preprocessed/edges/test', './Preprocessed/texture/test', transform=transforms.Compose([
+dataset = TwoImageDataset('./Preprocessed/edges/train', './Preprocessed/texture/train', transform=transforms.Compose([
     transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ]))
